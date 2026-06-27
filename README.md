@@ -1,4 +1,4 @@
-# AulaPro
+# SIGED
 
 Pagina web estatica para gestion de alumnos con Bootstrap.
 
