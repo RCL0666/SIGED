@@ -39,7 +39,7 @@ const seedState = {
 
 let state = loadState();
 let currentRole = "teacher";
-let currentView = "dashboard";
+let currentView = "grades";
 
 const els = {
   teacherRoleBtn: document.getElementById("teacherRoleBtn"),
@@ -48,12 +48,6 @@ const els = {
   studentViewSelect: document.getElementById("studentViewSelect"),
   pageTitle: document.getElementById("pageTitle"),
   todayText: document.getElementById("todayText"),
-  totalStudents: document.getElementById("totalStudents"),
-  globalAverage: document.getElementById("globalAverage"),
-  attendanceRate: document.getElementById("attendanceRate"),
-  activeEvents: document.getElementById("activeEvents"),
-  rankingTable: document.getElementById("rankingTable"),
-  dashboardEvents: document.getElementById("dashboardEvents"),
   gradeForm: document.getElementById("gradeForm"),
   gradeStudent: document.getElementById("gradeStudent"),
   gradeSubject: document.getElementById("gradeSubject"),
@@ -161,7 +155,7 @@ function setRole(role) {
   document.querySelectorAll(".student-only").forEach((el) => el.classList.toggle("hidden", role !== "student"));
 
   if (role === "teacher" && ["studentGrades", "studentEvents"].includes(currentView)) {
-    setView("dashboard");
+    setView("grades");
   } else if (role === "student" && ["grades", "events"].includes(currentView)) {
     setView("studentGrades");
   } else {
@@ -178,7 +172,6 @@ function setView(view) {
   });
 
   const titles = {
-    dashboard: "Gestion de alumnos",
     grades: "Asignar notas",
     attendance: "Registro de asistencia",
     events: "Eventos para alumnos",
@@ -190,7 +183,6 @@ function setView(view) {
 }
 
 function render() {
-  renderDashboard();
   renderGrades();
   renderAttendance();
   renderEvents();
@@ -205,28 +197,6 @@ function fillStudentSelects() {
   els.studentViewSelect.innerHTML = options;
   els.gradeStudent.innerHTML = options;
   els.eventStudent.innerHTML = `<option value="all">Todos los alumnos</option>${options}`;
-}
-
-function renderDashboard() {
-  els.totalStudents.textContent = state.students.length;
-  els.globalAverage.textContent = formatAverage(average(state.grades.map((grade) => grade.score)));
-  els.attendanceRate.textContent = `${calculateAttendanceRate()}%`;
-  els.activeEvents.textContent = state.events.length;
-
-  const ranking = [...state.students].sort((a, b) => studentAverage(b.id) - studentAverage(a.id));
-  els.rankingTable.innerHTML = ranking.map((student) => {
-    const avg = studentAverage(student.id);
-    return `
-      <tr>
-        <td>${studentLabel(student)}</td>
-        <td>${student.course}</td>
-        <td><strong>${formatAverage(avg)}</strong></td>
-        <td>${statusBadge(avg)}</td>
-      </tr>
-    `;
-  }).join("");
-
-  renderEventList(els.dashboardEvents, sortedEvents().slice(0, 4));
 }
 
 function renderGrades() {
@@ -368,17 +338,6 @@ function resetDemo() {
   render();
 }
 
-function studentAverage(studentId) {
-  return average(state.grades.filter((grade) => grade.studentId === studentId).map((grade) => grade.score));
-}
-
-function calculateAttendanceRate() {
-  const records = Object.values(state.attendance).flatMap((day) => Object.values(day));
-  if (!records.length) return 0;
-  const positive = records.filter((status) => status === "present" || status === "late").length;
-  return Math.round((positive / records.length) * 100);
-}
-
 function attendanceSummary(studentId) {
   const records = Object.values(state.attendance).map((day) => day[studentId]).filter(Boolean);
   if (!records.length) return "Sin registros";
@@ -398,13 +357,6 @@ function attendanceBadge(status) {
   };
   const [className, label] = map[status] || map.pending;
   return `<span class="badge-soft ${className}">${label}</span>`;
-}
-
-function statusBadge(avg) {
-  if (!avg) return `<span class="badge-soft badge-warn">Sin notas</span>`;
-  if (avg >= 5.5) return `<span class="badge-soft badge-ok">Destacado</span>`;
-  if (avg >= 4) return `<span class="badge-soft badge-warn">En progreso</span>`;
-  return `<span class="badge-soft badge-danger">Apoyo requerido</span>`;
 }
 
 function sortedEvents() {

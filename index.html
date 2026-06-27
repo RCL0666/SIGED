@@ -36,10 +36,7 @@
         </div>
 
         <nav class="nav flex-column nav-pills app-nav" id="appNav">
-          <button class="nav-link active" data-view="dashboard" type="button">
-            <i class="bi bi-grid-1x2-fill"></i> Resumen
-          </button>
-          <button class="nav-link teacher-only" data-view="grades" type="button">
+          <button class="nav-link active teacher-only" data-view="grades" type="button">
             <i class="bi bi-journal-check"></i> Asignar notas
           </button>
           <button class="nav-link" data-view="attendance" type="button">
@@ -65,7 +62,7 @@
         <header class="topbar">
           <div>
             <p class="eyebrow">Panel escolar</p>
-            <h1 id="pageTitle">Gestion de alumnos</h1>
+            <h1 id="pageTitle">Asignar notas</h1>
           </div>
           <div class="topbar-actions">
             <div class="date-chip">
@@ -75,66 +72,7 @@
           </div>
         </header>
 
-        <section class="view active" id="dashboardView">
-          <div class="stats-grid">
-            <article class="stat-card">
-              <span>Alumnos</span>
-              <strong id="totalStudents">0</strong>
-              <i class="bi bi-people"></i>
-            </article>
-            <article class="stat-card">
-              <span>Promedio general</span>
-              <strong id="globalAverage">0.0</strong>
-              <i class="bi bi-graph-up-arrow"></i>
-            </article>
-            <article class="stat-card">
-              <span>Asistencia</span>
-              <strong id="attendanceRate">0%</strong>
-              <i class="bi bi-check2-circle"></i>
-            </article>
-            <article class="stat-card">
-              <span>Eventos activos</span>
-              <strong id="activeEvents">0</strong>
-              <i class="bi bi-calendar-week"></i>
-            </article>
-          </div>
-
-          <div class="content-grid mt-4">
-            <section class="panel">
-              <div class="panel-header">
-                <div>
-                  <p class="eyebrow">Rendimiento</p>
-                  <h2>Ranking de alumnos</h2>
-                </div>
-              </div>
-              <div class="table-responsive">
-                <table class="table align-middle">
-                  <thead>
-                    <tr>
-                      <th>Alumno</th>
-                      <th>Curso</th>
-                      <th>Promedio</th>
-                      <th>Estado</th>
-                    </tr>
-                  </thead>
-                  <tbody id="rankingTable"></tbody>
-                </table>
-              </div>
-            </section>
-
-            <section class="panel">
-              <div class="panel-header">
-                <div>
-                  <p class="eyebrow">Agenda</p>
-                  <h2>Proximos eventos</h2>
-                </div>
-              </div>
-              <div class="event-list" id="dashboardEvents"></div>
-            </section>
-          </div>
-        </section>
-
-        <section class="view" id="gradesView">
+        <section class="view active" id="gradesView">
           <div class="section-layout">
             <form class="panel form-panel" id="gradeForm">
               <div class="panel-header">
