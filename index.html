@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SIGED | Gestion de alumnos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark"><i class="bi bi-mortarboard-fill"></i></div>
+          <div>
+            <strong>SIGED</strong>
+            <span>Gestion academica</span>
+          </div>
+        </div>
+
+        <div class="role-card">
+          <span class="small-label">Vista activa</span>
+          <div class="btn-group w-100 mt-2" role="group" aria-label="Selector de rol">
+            <button class="btn btn-role active" id="teacherRoleBtn" type="button">
+              <i class="bi bi-person-workspace"></i> Profesor
+            </button>
+            <button class="btn btn-role" id="studentRoleBtn" type="button">
+              <i class="bi bi-person"></i> Alumno
+            </button>
+          </div>
+          <div class="student-picker mt-3" id="studentPickerWrap">
+            <label class="form-label" for="studentViewSelect">Alumno</label>
+            <select class="form-select" id="studentViewSelect"></select>
+          </div>
+        </div>
+
+        <nav class="nav flex-column nav-pills app-nav" id="appNav">
+          <button class="nav-link active" data-view="dashboard" type="button">
+            <i class="bi bi-grid-1x2-fill"></i> Resumen
+          </button>
+          <button class="nav-link teacher-only" data-view="grades" type="button">
+            <i class="bi bi-journal-check"></i> Asignar notas
+          </button>
+          <button class="nav-link" data-view="attendance" type="button">
+            <i class="bi bi-calendar2-check"></i> Asistencia
+          </button>
+          <button class="nav-link teacher-only" data-view="events" type="button">
+            <i class="bi bi-megaphone"></i> Eventos
+          </button>
+          <button class="nav-link student-only" data-view="studentGrades" type="button">
+            <i class="bi bi-bar-chart"></i> Mis notas
+          </button>
+          <button class="nav-link student-only" data-view="studentEvents" type="button">
+            <i class="bi bi-calendar-event"></i> Mis eventos
+          </button>
+        </nav>
+
+        <button class="btn btn-reset mt-auto" id="resetDemoBtn" type="button">
+          <i class="bi bi-arrow-clockwise"></i> Reiniciar demo
+        </button>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Panel escolar</p>
+            <h1 id="pageTitle">Gestion de alumnos</h1>
+          </div>
+          <div class="topbar-actions">
+            <div class="date-chip">
+              <i class="bi bi-calendar3"></i>
+              <span id="todayText"></span>
+            </div>
+          </div>
+        </header>
+
+        <section class="view active" id="dashboardView">
+          <div class="stats-grid">
+            <article class="stat-card">
+              <span>Alumnos</span>
+              <strong id="totalStudents">0</strong>
+              <i class="bi bi-people"></i>
+            </article>
+            <article class="stat-card">
+              <span>Promedio general</span>
+              <strong id="globalAverage">0.0</strong>
+              <i class="bi bi-graph-up-arrow"></i>
+            </article>
+            <article class="stat-card">
+              <span>Asistencia</span>
+              <strong id="attendanceRate">0%</strong>
+              <i class="bi bi-check2-circle"></i>
+            </article>
+            <article class="stat-card">
+              <span>Eventos activos</span>
+              <strong id="activeEvents">0</strong>
+              <i class="bi bi-calendar-week"></i>
+            </article>
+          </div>
+
+          <div class="content-grid mt-4">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">Rendimiento</p>
+                  <h2>Ranking de alumnos</h2>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table align-middle">
+                  <thead>
+                    <tr>
+                      <th>Alumno</th>
+                      <th>Curso</th>
+                      <th>Promedio</th>
+                      <th>Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rankingTable"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">Agenda</p>
+                  <h2>Proximos eventos</h2>
+                </div>
+              </div>
+              <div class="event-list" id="dashboardEvents"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="gradesView">
+          <div class="section-layout">
+            <form class="panel form-panel" id="gradeForm">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">Profesor</p>
+                  <h2>Asignar nota</h2>
+                </div>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="gradeStudent">Alumno</label>
+                  <select class="form-select" id="gradeStudent" required></select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="gradeSubject">Asignatura</label>
+                  <select class="form-select" id="gradeSubject" required>
+                    <option>Matematicas</option>
+                    <option>Lenguaje</option>
+                    <option>Historia</option>
+                    <option>Ciencias</option>
+                    <option>Ingles</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="gradeName">Evaluacion</label>
+                  <input class="form-control" id="gradeName" placeholder="Prueba unidad 2" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="gradeScore">Nota</label>
+                  <input class="form-control" id="gradeScore" type="number" min="1" max="7" step="0.1" placeholder="6.4" required>
+                </div>
+              </div>
+              <button class="btn btn-primary mt-4" type="submit">
+                <i class="bi bi-plus-circle"></i> Guardar nota
+              </button>
+            </form>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">Registro</p>
+                  <h2>Notas ingresadas</h2>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table align-middle">
+                  <thead>
+                    <tr>
+                      <th>Alumno</th>
+                      <th>Asignatura</th>
+                      <th>Evaluacion</th>
+                      <th>Nota</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="gradesTable"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="attendanceView">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Control diario</p>
+                <h2 id="attendanceTitle">Registro de asistencia</h2>
+              </div>
+              <input class="form-control date-input teacher-only" id="attendanceDate" type="date">
+            </div>
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>Alumno</th>
+                    <th>Curso</th>
+                    <th>Estado</th>
+                    <th>Historial</th>
+                  </tr>
+                </thead>
+                <tbody id="attendanceTable"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" id="eventsView">
+          <div class="section-layout">
+            <form class="panel form-panel" id="eventForm">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">Profesor</p>
+                  <h2>Asignar evento</h2>
+                </div>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="eventStudent">Destinatario</label>
+                  <select class="form-select" id="eventStudent" required></select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="eventDate">Fecha</label>
+                  <input class="form-control" id="eventDate" type="date" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="eventTitle">Titulo</label>
+                  <input class="form-control" id="eventTitle" placeholder="Entrega de proyecto" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="eventDescription">Descripcion</label>
+                  <textarea class="form-control" id="eventDescription" rows="4" placeholder="Indicaciones para el alumno" required></textarea>
+                </div>
+              </div>
+              <button class="btn btn-primary mt-4" type="submit">
+                <i class="bi bi-send"></i> Publicar evento
+              </button>
+            </form>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">Comunicaciones</p>
+                  <h2>Eventos asignados</h2>
+                </div>
+              </div>
+              <div class="event-list" id="eventsList"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="studentGradesView">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Alumno</p>
+                <h2 id="studentGradesTitle">Mis notas</h2>
+              </div>
+              <span class="average-pill" id="studentAverage">Promedio 0.0</span>
+            </div>
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>Asignatura</th>
+                    <th>Evaluacion</th>
+                    <th>Nota</th>
+                    <th>Fecha</th>
+                  </tr>
+                </thead>
+                <tbody id="studentGradesTable"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" id="studentEventsView">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Alumno</p>
+                <h2>Mis eventos</h2>
+              </div>
+            </div>
+            <div class="event-list" id="studentEventsList"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div class="toast align-items-center text-bg-dark border-0" id="appToast" role="status" aria-live="polite" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body" id="toastMessage"></div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
